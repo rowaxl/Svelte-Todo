@@ -40,10 +40,10 @@
         Loading...
       </p>
     {:then}
-      {#each todos as todo}
-        <ul class="bg-white dark:bg-slate-800 rounded-lg w-96 text-gray-900">
+      <ul class="bg-white dark:bg-slate-800 rounded-lg w-96 text-gray-900 flex flex-col">
+        {#each todos as todo}
           <TodoItem todo={todo} />
-        </ul>
-      {/each}
+        {/each}
+      </ul>
     {/await}
 </div>
