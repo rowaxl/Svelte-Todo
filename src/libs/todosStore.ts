@@ -1,22 +1,46 @@
 import { writable } from "svelte/store"
 import type { Todo } from './types'
+import { fetchTodos, insertTodo, updateTodo } from './supabase'
 
-export const todoStore = writable<Todo[]>([])
+const createTodoStore = () => {
+  const { subscribe, update, set } = writable<Todo[]>([])
 
-export const addTodos = (newTodo: Todo) => {
-  todoStore.update(todos =>  [...todos, newTodo])
+  const addTodo = (newTodo: Todo) => {
+    update(todos =>  [...todos, newTodo])
+
+    insertTodo(newTodo)
+  }
+
+  const toggleChecked = (targetId: number) => {
+    update(todos => {
+      const targetIndex = todos.findIndex(todo => todo.id === targetId)
+  
+      return [
+        ...todos.slice(0, targetIndex),
+        {...todos[targetIndex], completed: !todos[targetIndex].completed },
+        ...todos.slice(targetIndex + 1)
+      ]
+    })
+
+    // this one get updated store
+    subscribe(async (todos) => {
+      const targetIndex = todos.findIndex(todo => todo.id === targetId)
+  
+      updateTodo({...todos[targetIndex], completed: todos[targetIndex].completed })
+    })
+  }
+
+  const initStore = async () => {
+    const todos = await fetchTodos()
+    set(todos)
+  }
+  
+  return {
+    subscribe,
+    initStore,
+    addTodo,
+    toggleChecked,
+  }
 }
 
-
-
-export const toggleChecked = (targetId: number) => {
-  todoStore.update(todos => {
-    const targetIndex = todos.findIndex(todo => todo.id === targetId)
-
-    return [
-      ...todos.slice(0, targetIndex),
-      {...todos[targetIndex], completed: !todos[targetIndex].completed },
-      ...todos.slice(targetIndex + 1)
-    ]
-  })
-}
+export default createTodoStore()
