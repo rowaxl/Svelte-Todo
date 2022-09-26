@@ -1,5 +1,5 @@
 <script lang="ts">
-  import NavLink from "./NavLink.svelte";
+  import NavLink from "./navigationLink.svelte";
 </script>
 
 <nav class="bg-gray-800 w-screen">
