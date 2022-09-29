@@ -22,7 +22,8 @@ const createTodoStore = () => {
       ]
     })
 
-    // this one get updated store
+    // FIXME?
+    // subscribeのコールバックは、アップデート済みのStoreが入る
     subscribe(async (todos) => {
       const targetIndex = todos.findIndex(todo => todo.id === targetId)
   
